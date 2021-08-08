@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { Container } from "@material-ui/core";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import Home from "./components/home/Home";
+import Navbar from "./components/navbar/NavBar";
+import Auth from "./components/auth/Auth";
+
+const App = () => {
+	const [currentId, setCurrentId] = useState(null);
+	const [open, setOpen] = useState(false);
+
+	const handleOpen = () => {
+		setOpen(true);
+	};
+
+	const handleClose = () => {
+		setOpen(false);
+	};
+
+	return (
+		<BrowserRouter>
+			<Container maxWidth='md'>
+				<Navbar
+					currentId={currentId}
+					setCurrentId={setCurrentId}
+					handleOpen={handleOpen}
+					handleClose={handleClose}
+					open={open}
+				/>
+				<Switch>
+					<Route path='/' exact>
+						<Home
+							setCurrentId={setCurrentId}
+							handleOpen={handleOpen}
+							currentId={currentId}
+						/>
+					</Route>
+					<Route path='/auth' exact component={Auth} />
+				</Switch>
+			</Container>
+		</BrowserRouter>
+	);
+};
 
 export default App;

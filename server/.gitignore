@@ -1,3 +1,4 @@
 node_modules
 http.rest
-.env.example
+.env
+Procfile
