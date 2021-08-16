@@ -11,6 +11,7 @@ const App = () => {
 	const [currentId, setCurrentId] = useState(null);
 	const [open, setOpen] = useState(false);
 	const profile = JSON.parse(localStorage.getItem("profile"));
+
 	const handleOpen = () => {
 		setOpen(true);
 	};
@@ -38,13 +39,7 @@ const App = () => {
 							currentId={currentId}
 						/>
 					</Route>
-					<Route path='/posts/search' exact>
-						<Home
-							setCurrentId={setCurrentId}
-							handleOpen={handleOpen}
-							currentId={currentId}
-						/>
-					</Route>
+					<Route path='/posts/search' exact component={Home} />
 					<Route path='/posts/:id' exact component={PostDetails} />
 					<Route
 						path='/auth'

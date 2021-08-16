@@ -21,6 +21,11 @@ export default makeStyles((theme) => ({
 			height: "27px",
 			fontSize: ".8em",
 		},
+		searchButton: {
+			width: "27px",
+			height: "27px",
+			fontSize: ".8em",
+		},
 		logoutButton: {
 			width: "27px",
 			height: "27px",
@@ -65,6 +70,18 @@ export default makeStyles((theme) => ({
 	},
 	addButton: {
 		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		color: theme.palette.getContrastText(blue[600]),
+		backgroundColor: blue[600],
+		borderRadius: "50px",
+		cursor: "pointer",
+		padding: "6px",
+		border: "none",
+	},
+	searchButton: {
+		display: "flex",
+		marginRight: "15px",
 		justifyContent: "center",
 		alignItems: "center",
 		color: theme.palette.getContrastText(blue[600]),

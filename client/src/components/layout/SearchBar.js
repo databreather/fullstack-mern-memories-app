@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { AppBar, TextField, Button } from "@material-ui/core";
 import ChipInput from "material-ui-chip-input";
 import { useDispatch } from "react-redux";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { searchPosts } from "../../actions/memories";
 
-const SearchBar = ({ className }) => {
+const SearchBar = ({ className, handleClose }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const [term, setTerm] = useState("");
@@ -19,6 +19,7 @@ const SearchBar = ({ className }) => {
 		} else {
 			history.push("/");
 		}
+		handleClose();
 	};
 	const handleSearch = (e) => {
 		setTerm(e.target.value);

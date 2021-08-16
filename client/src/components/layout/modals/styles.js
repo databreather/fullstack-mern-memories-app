@@ -14,4 +14,11 @@ export default makeStyles((theme) => ({
 		padding: theme.spacing(3),
 		maxWidth: "400px",
 	},
+	appBarSearch: {
+		borderRadius: 4,
+		display: "flex",
+		padding: "16px",
+		margin: "20px 0",
+		width: "500px",
+	},
 }));

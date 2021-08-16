@@ -5,7 +5,7 @@ import useStyles from "./styles";
 import Fade from "./Fade";
 import Form from "../../form/Form";
 
-const SpringModal = ({
+const AddModal = ({
 	handleOpen,
 	handleClose,
 	open,
@@ -45,4 +45,4 @@ const SpringModal = ({
 	);
 };
 
-export default SpringModal;
+export default AddModal;

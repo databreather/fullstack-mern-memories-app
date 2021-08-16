@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import {
 	CircularProgress,
-	Grid,
 	Paper,
 	Typography,
 	Divider,
@@ -27,7 +26,7 @@ const PostDetails = () => {
 		if (post) {
 			dispatch(searchPosts({ search: "none", tags: post?.tags.join(",") }));
 		}
-	}, [post]);
+	}, [dispatch, post]);
 	let recommendedPosts = [];
 
 	if (post) {

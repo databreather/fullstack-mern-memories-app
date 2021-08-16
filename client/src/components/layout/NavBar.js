@@ -56,7 +56,7 @@ const Navbar = ({ handleOpen, handleClose, open, currentId, setCurrentId }) => {
 			</div>
 
 			<div className={classes.profile}>
-				<SearchModal />
+				<SearchModal className={classes.searchButton} />
 				<AddModal
 					currentId={currentId}
 					setCurrentId={setCurrentId}

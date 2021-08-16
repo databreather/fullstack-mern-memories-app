@@ -1,21 +1,11 @@
-import React, { useEffect, useState } from "react";
-import {
-	Container,
-	Grow,
-	Grid,
-	Paper,
-	AppBar,
-	TextField,
-	Button,
-} from "@material-ui/core";
+import React, { useEffect } from "react";
+import { Container, Grow, Grid, Paper } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import ChipInput from "material-ui-chip-input";
 
-import { getPosts, searchPosts } from "../../actions/memories";
+import { getPosts } from "../../actions/memories";
 import Posts from "../posts/Posts";
 import Paginate from "../pagination/Paginate";
-import SearchBar from "../layout/SearchBar";
 import useStyles from "./styles";
 
 function useQuery() {
@@ -54,7 +44,6 @@ const Home = ({ handleOpen, setCurrentId }) => {
 					</Grid>
 				</Grid>
 				<Grid item xs={12}>
-					<SearchBar className={classes.appBarSearch} />
 					{/* only render Pagination in case we're not doing search and number of pages is greater than 1 */}
 					{!search_q && !search_tags && numberOfPages > 1 && (
 						<Paper className={classes.pagination} elevation={6}>
