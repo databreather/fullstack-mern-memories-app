@@ -6,12 +6,41 @@ import Post from "../models/post.js";
 const router = express.Router();
 
 export const getPosts = async (req, res) => {
+	//get posts by paginating
+	const page = parseInt(req.query.page);
+	const LIMIT = 8;
+	const startIndex = (page - 1) * LIMIT;
 	try {
-		const posts = await Post.find();
+		const totalPosts = await Post.countDocuments({});
+		const posts = await Post.find()
+			.sort({ _id: -1 })
+			.limit(LIMIT)
+			.skip(startIndex);
 
-		return res.status(200).json(posts);
+		return res.status(200).json({
+			posts,
+			currentPage: page,
+			numberOfPages: Math.ceil(totalPosts / LIMIT),
+		});
 	} catch (error) {
 		console.log(error);
+		return res.status(500).json({ message: "Internal Server Error" });
+	}
+};
+
+export const searchPosts = async (req, res) => {
+	const { search_q, tags } = req.query;
+	const title = new RegExp(search_q, "i");
+	try {
+		let posts;
+		if (!search_q || !tags) {
+			posts = await Post.find();
+		}
+		posts = await Post.find({
+			$or: [{ title: title }, { tags: { $in: tags.split(",") } }],
+		}); //search by title or tags
+		return res.status(200).json(posts);
+	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
@@ -22,7 +51,7 @@ export const getPost = async (req, res) => {
 		if (!post)
 			return res.status(404).json({ message: "No post found with that id." });
 
-		res.status(200).json(post);
+		return res.status(200).json(post);
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({ message: "Internal Server Error" });
@@ -30,7 +59,7 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-	req.body.tags = req.body.tags ? splitByHashes(req.body.tags) : [];
+	req.body.tags = req.body.tags ? req.body.tags.split(",") : [];
 
 	let post = new Post({
 		...req.body,
@@ -52,13 +81,12 @@ export const updatePost = async (req, res) => {
 		const post = await Post.findById(req.params.id);
 		if (!post)
 			return res.status(404).json({ message: "No post foung with that id" });
-
-		const updatedPost = await Post(
+		req.body.tags = req.body.tags.split(",");
+		const updatedPost = await Post.findByIdAndUpdate(
 			req.params.id,
 			{
 				...req.body,
 				updatedAt: new Date().toISOString(),
-				tags: req.body.tags ? splitByHashes(req.body.tags) : post.tags,
 			},
 			{ new: true }
 		);
@@ -119,8 +147,8 @@ export const likePost = async (req, res) => {
 	}
 };
 
-function splitByHashes(tags) {
-	return tags.match(/#[a-zA-Z0-9@&-_]+/);
-}
+// function splitByHashes(tags) {
+// 	return tags.match(/#[a-zA-Z0-9@&-_]+/);
+// }
 
 export default router;

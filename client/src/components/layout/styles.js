@@ -2,6 +2,31 @@ import { makeStyles } from "@material-ui/core/styles";
 import { blue, red } from "@material-ui/core/colors";
 
 export default makeStyles((theme) => ({
+	[theme.breakpoints.down("xs")]: {
+		heading: {
+			fontSize: "2em",
+		},
+		image: {
+			width: "25px",
+			height: "25px",
+			marginLeft: "5px",
+		},
+		userName: {
+			width: "30px",
+			height: "30px",
+			fontSize: "1em",
+		},
+		addButton: {
+			width: "27px",
+			height: "27px",
+			fontSize: ".8em",
+		},
+		logoutButton: {
+			width: "27px",
+			height: "27px",
+			fontSize: ".8em",
+		},
+	},
 	appBar: {
 		borderRadius: 15,
 		margin: "30px 0",
@@ -29,20 +54,27 @@ export default makeStyles((theme) => ({
 		alignItems: "center",
 		width: "400px",
 	},
-	userName: {
-		display: "flex",
-		alignItems: "center",
-	},
 	brandContainer: {
 		display: "flex",
 		alignItems: "center",
 	},
-	blue: {
+	userName: {
 		color: theme.palette.getContrastText(blue[600]),
 		backgroundColor: blue[600],
-		margin: "0 10px",
+		margin: "0 15px",
 	},
-	logout: {
+	addButton: {
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		color: theme.palette.getContrastText(blue[600]),
+		backgroundColor: blue[600],
+		borderRadius: "50px",
+		cursor: "pointer",
+		padding: "6px",
+		border: "none",
+	},
+	logoutButton: {
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",

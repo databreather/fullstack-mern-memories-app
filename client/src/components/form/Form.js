@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { TextField, Button, Typography } from "@material-ui/core";
+import ChipInput from "material-ui-chip-input";
 import { useDispatch, useSelector } from "react-redux";
 import FileBase from "react-file-base64";
+import { useHistory } from "react-router-dom";
 
-import { createPost, updatePost } from "../../actions/posts";
+import { createPost, updatePost } from "../../actions/memories";
 import useStyles from "./styles";
 
 import { Link } from "react-router-dom";
@@ -12,12 +14,13 @@ const Form = ({ currentId, setCurrentId, handleClose }) => {
 	const [textField, setTextField] = useState({
 		title: "",
 		message: "",
-		tags: "",
 	});
+	const [tags, setTags] = useState([]);
 	const [selectedFile, setSelectedFile] = useState("");
-	const post = useSelector((state) =>
-		currentId ? state.posts.find((message) => message._id === currentId) : null
+	const post = useSelector(({ memories }) =>
+		currentId ? memories.posts.find((post) => post._id === currentId) : null
 	);
+	const history = useHistory();
 	const dispatch = useDispatch();
 	const classes = useStyles();
 	const user = JSON.parse(localStorage.getItem("profile"))?.user;
@@ -27,29 +30,36 @@ const Form = ({ currentId, setCurrentId, handleClose }) => {
 			setTextField({
 				title: post.title,
 				message: post.message,
-				tags: post.tags.join(" "),
 			});
+			setTags(post.tags);
 			setSelectedFile(post.selectedFile);
 		}
 	}, [post]);
 
 	const clear = () => {
 		setCurrentId(null);
-		setTextField({ title: "", message: "", tags: "" });
+		setTextField({ title: "", message: "" });
+		setTags([]);
 		setSelectedFile("");
 	};
 
 	const onInputChange = (e) => {
 		setTextField({ ...textField, [e.target.name]: e.target.value });
 	};
+	const handleAdd = (tag) => setTags([...tags, tag]);
+
+	const handleDelete = (tagToDelete) =>
+		setTags(tags.filter((tag) => tag !== tagToDelete));
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const postData = { ...textField, selectedFile };
+		const postData = { ...textField, selectedFile, tags: tags.join(",") };
 		if (currentId) {
-			dispatch(updatePost(currentId, { ...postData, name: user?.name }));
+			dispatch(
+				updatePost(currentId, { ...postData, name: user?.name }, history)
+			);
 		} else {
-			dispatch(createPost({ ...postData, name: user?.name }));
+			dispatch(createPost({ ...postData, name: user?.name }, history));
 		}
 		clear();
 		handleClose();
@@ -93,13 +103,15 @@ const Form = ({ currentId, setCurrentId, handleClose }) => {
 				value={textField.message}
 				onChange={onInputChange}
 			/>
-			<TextField
+			<ChipInput
 				name='tags'
-				variant='outlined'
-				label='Tags (hash separated)'
+				style={{ margin: "10px 0" }}
+				value={tags}
+				onAdd={handleAdd}
+				onDelete={handleDelete}
 				fullWidth
-				value={textField.tags}
-				onChange={onInputChange}
+				label='Tags'
+				variant='outlined'
 			/>
 			<div className={classes.fileInput}>
 				<FileBase

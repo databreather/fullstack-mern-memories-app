@@ -3,7 +3,7 @@ import { Modal, Backdrop } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import useStyles from "./styles";
 import Fade from "./Fade";
-import Form from "../form/Form";
+import Form from "../../form/Form";
 
 const SpringModal = ({
 	handleOpen,
@@ -11,12 +11,13 @@ const SpringModal = ({
 	open,
 	currentId,
 	setCurrentId,
+	className,
 }) => {
 	const classes = useStyles();
 
 	return (
 		<div>
-			<button className={classes.add} type='button' onClick={handleOpen}>
+			<button className={className} type='button' onClick={handleOpen}>
 				<AddIcon fontSize='small' />
 			</button>
 			<Modal

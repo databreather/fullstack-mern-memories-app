@@ -5,11 +5,12 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import decode from "jwt-decode";
 
-import memories from "../../images/memories.png";
+import memories from "../../images/memories-Logo.png";
 import { userLogout } from "../../actions/auth";
 import useStyles from "./styles";
 
-import SpringModal from "../modal/SpringModal";
+import AddModal from "./modals/AddModal";
+import SearchModal from "./modals/SearchModal";
 
 const Navbar = ({ handleOpen, handleClose, open, currentId, setCurrentId }) => {
 	const [profile, setProfile] = useState(null);
@@ -51,27 +52,29 @@ const Navbar = ({ handleOpen, handleClose, open, currentId, setCurrentId }) => {
 					align='center'>
 					Memories
 				</Typography>
-				<img className={classes.image} src={memories} alt='icon' height='50' />
+				<img className={classes.image} src={memories} alt='icon' height='40' />
 			</div>
 
 			<div className={classes.profile}>
-				<SpringModal
+				<SearchModal />
+				<AddModal
 					currentId={currentId}
 					setCurrentId={setCurrentId}
 					handleOpen={handleOpen}
 					handleClose={handleClose}
 					open={open}
+					className={classes.addButton}
 				/>
 				{profile?.user && (
 					<>
 						{" "}
-						<Avatar className={classes.blue} alt={profile?.user.name}>
+						<Avatar className={classes.userName} alt={profile?.user.name}>
 							{profile?.user.name
 								.split(" ")
 								.map((ch) => ch.charAt(0))
 								.join("")}
 						</Avatar>
-						<button className={classes.logout} onClick={logout}>
+						<button className={classes.logoutButton} onClick={logout}>
 							<ExitToAppRoundedIcon fontSize='small' />
 						</button>
 					</>

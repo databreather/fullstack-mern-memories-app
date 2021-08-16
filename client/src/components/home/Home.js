@@ -1,20 +1,40 @@
-import React, { useEffect } from "react";
-import { Container, Grow, Grid } from "@material-ui/core";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import {
+	Container,
+	Grow,
+	Grid,
+	Paper,
+	AppBar,
+	TextField,
+	Button,
+} from "@material-ui/core";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import ChipInput from "material-ui-chip-input";
 
-import { getPosts } from "../../actions/posts";
+import { getPosts, searchPosts } from "../../actions/memories";
 import Posts from "../posts/Posts";
-//import useStyles from "./styles";
+import Paginate from "../pagination/Paginate";
+import SearchBar from "../layout/SearchBar";
+import useStyles from "./styles";
 
-const Home = ({ handleOpen, currentId, setCurrentId }) => {
-	//const classes = useStyles();
+function useQuery() {
+	return new URLSearchParams(useLocation().search);
+}
+const Home = ({ handleOpen, setCurrentId }) => {
+	const classes = useStyles();
 	const dispatch = useDispatch();
-	const location = useLocation();
+	const { posts, isLoading, numberOfPages } = useSelector(
+		(state) => state.memories
+	);
+	const query = useQuery();
+	const page = parseInt(query.get("page")) || 1;
+	const search_q = query.get("search_q");
+	const search_tags = query.get("tags");
 
 	useEffect(() => {
-		dispatch(getPosts());
-	}, [currentId, location, dispatch]);
+		dispatch(getPosts(page));
+	}, [dispatch, page]);
 
 	return (
 		<Grow in>
@@ -25,8 +45,22 @@ const Home = ({ handleOpen, currentId, setCurrentId }) => {
 					alignItems='stretch'
 					spacing={3}>
 					<Grid item xs={12}>
-						<Posts setCurrentId={setCurrentId} handleOpen={handleOpen} />
+						<Posts
+							posts={posts}
+							isLoading={isLoading}
+							setCurrentId={setCurrentId}
+							handleOpen={handleOpen}
+						/>
 					</Grid>
+				</Grid>
+				<Grid item xs={12}>
+					<SearchBar className={classes.appBarSearch} />
+					{/* only render Pagination in case we're not doing search and number of pages is greater than 1 */}
+					{!search_q && !search_tags && numberOfPages > 1 && (
+						<Paper className={classes.pagination} elevation={6}>
+							<Paginate page={page} numberOfPages={numberOfPages} />
+						</Paper>
+					)}
 				</Grid>
 			</Container>
 		</Grow>
