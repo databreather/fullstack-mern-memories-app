@@ -30,15 +30,14 @@ export const getPosts = async (req, res) => {
 
 export const searchPosts = async (req, res) => {
 	const { search_q, tags } = req.query;
-	const title = new RegExp(search_q, "i");
+	let posts;
 	try {
-		let posts;
-		if (!search_q || !tags) {
+		if (!search_q && !tags) {
 			posts = await Post.find();
+		} else {
+			posts = await Post.find({ tags: { $all: tags.split(",") } }); //search by title or tags { title: new RegExp(search_q, "i") },
 		}
-		posts = await Post.find({
-			$or: [{ title: title }, { tags: { $in: tags.split(",") } }],
-		}); //search by title or tags
+
 		return res.status(200).json(posts);
 	} catch (error) {
 		return res.status(500).json({ message: "Internal Server Error" });

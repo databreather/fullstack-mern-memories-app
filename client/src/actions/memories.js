@@ -8,6 +8,7 @@ import {
 	LIKE_POST,
 	START_LOADING,
 	END_LOADING,
+	ERROR_MESSAGE,
 } from "../actionTypes/types";
 import * as api from "../api/index";
 
@@ -34,7 +35,7 @@ export const searchPosts = (searchQuery) => async (dispatch) => {
 		});
 		dispatch({ type: END_LOADING });
 	} catch (error) {
-		console.log(error);
+		dispatch({ type: ERROR_MESSAGE, payload: error.response.data });
 	}
 };
 

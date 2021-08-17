@@ -14,7 +14,7 @@ function useQuery() {
 const Home = ({ handleOpen, setCurrentId }) => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
-	const { posts, isLoading, numberOfPages } = useSelector(
+	const { posts, isLoading, numberOfPages, errorMessage } = useSelector(
 		(state) => state.memories
 	);
 	const query = useQuery();
@@ -40,6 +40,8 @@ const Home = ({ handleOpen, setCurrentId }) => {
 							isLoading={isLoading}
 							setCurrentId={setCurrentId}
 							handleOpen={handleOpen}
+							search_q={search_q}
+							search_tags={search_tags}
 						/>
 					</Grid>
 				</Grid>

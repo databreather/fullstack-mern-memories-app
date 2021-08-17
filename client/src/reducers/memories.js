@@ -8,6 +8,7 @@ import {
 	DELETE_POST,
 	START_LOADING,
 	END_LOADING,
+	ERROR_MESSAGE,
 } from "../actionTypes/types.js";
 
 const initialState = {
@@ -16,9 +17,16 @@ const initialState = {
 	currentPage: 0,
 	numberOfPages: 0,
 	isLoading: false,
+	successMessage: "",
+	errorMessage: "",
 };
 const memories = (state = initialState, action) => {
 	switch (action.type) {
+		case ERROR_MESSAGE:
+			return {
+				...state,
+				errorMessage: action.payload,
+			};
 		case START_LOADING:
 			return {
 				...state,
