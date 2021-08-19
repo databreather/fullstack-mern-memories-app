@@ -20,18 +20,15 @@ const PostDetails = () => {
 
 	useEffect(() => {
 		dispatch(getPost(id));
-	}, [dispatch, id]);
+	}, [id]);
 
 	useEffect(() => {
 		if (post) {
-			dispatch(searchPosts({ search: "none", tags: post?.tags.join(",") }));
+			dispatch(searchPosts({ search: "none", tags: post.tags.join(",") }));
 		}
-	}, [dispatch, post]);
-	let recommendedPosts = [];
+	}, [post]);
 
-	if (post) {
-		recommendedPosts = posts?.filter(({ _id }) => _id !== post._id);
-	}
+	const recommendedPosts = posts.filter(({ _id }) => _id !== post?._id);
 
 	const openPost = (postId) => {
 		history.push(`/posts/${postId}`);
@@ -90,22 +87,31 @@ const PostDetails = () => {
 						{recommendedPosts.map(
 							({ title, message, selectedFile, name, _id, likes }) => (
 								<div
+									className={classes.recommendedCard}
 									key={_id}
 									style={{ margin: "20px", cursor: "pointer" }}
-									onClick={openPost(_id)}>
-									<Typography gutterBottom variant='h6'>
-										{title}
-									</Typography>
-									<Typography gutterBottom variant='subtitle2'>
-										{name}
-									</Typography>
-									<Typography gutterBottom variant='subtitle2'>
-										{message}
-									</Typography>
-									<Typography gutterBottom variant='h61'>
-										Likes: {likes.length}
-									</Typography>
-									<img src={selectedFile} width='200' alt={title} />
+									onClick={() => openPost(_id)}>
+									<div className={classes.recommendedContent}>
+										<Typography gutterBottom variant='h6'>
+											{title}
+										</Typography>
+										<Typography gutterBottom variant='body2' component='p'>
+											{message}
+										</Typography>
+										<Typography
+											style={{ marginTop: "10px" }}
+											gutterBottom
+											variant='subtitle2'>
+											Created By: <strong>{name}</strong>
+										</Typography>
+									</div>
+									<img
+										className={classes.recommendedImage}
+										src={selectedFile}
+										width='220px'
+										height='220px'
+										alt={title}
+									/>
 								</div>
 							)
 						)}

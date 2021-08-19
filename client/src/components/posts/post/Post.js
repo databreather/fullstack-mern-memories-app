@@ -40,20 +40,21 @@ const Post = ({ handleOpen, post, setCurrentId }) => {
 					{moment(post.createdAt).fromNow()}
 				</Typography>
 			</div>
-			{(post?.creatorId === user?.googleId || user?._id) && (
-				<div className={classes.overlay2}>
-					<Button
-						onClick={(e) => {
-							e.stopPropagation();
-							setCurrentId(post._id);
-							handleOpen();
-						}}
-						style={{ color: "white" }}
-						size='small'>
-						<MoreHorizIcon fontSize='medium' />
-					</Button>
-				</div>
-			)}
+			{user?.googleId === post?.creatorId ||
+				(user?._id === post?.creatorId && (
+					<div className={classes.overlay2}>
+						<Button
+							onClick={(e) => {
+								e.stopPropagation();
+								setCurrentId(post._id);
+								handleOpen();
+							}}
+							style={{ color: "white" }}
+							size='small'>
+							<MoreHorizIcon fontSize='medium' />
+						</Button>
+					</div>
+				))}
 			<div className={classes.details}>
 				<Typography variant='body2' color='textSecondary' component='h2'>
 					{post.tags.map((tag) => `#${tag} `)}
@@ -76,7 +77,7 @@ const Post = ({ handleOpen, post, setCurrentId }) => {
 					size='small'
 					color='primary'
 					disabled={!user}
-					onClick={() => dispatch(likePost(post._id))}>
+					onClick={() => dispatch(likePost(post?._id))}>
 					<Likes likes={post.likes} user={user} />
 				</Button>
 				{(user?.googleId === post?.creatorId ||
@@ -84,7 +85,7 @@ const Post = ({ handleOpen, post, setCurrentId }) => {
 					<Button
 						size='small'
 						color='secondary'
-						onClick={() => dispatch(deletePost(post._id))}>
+						onClick={() => dispatch(deletePost(post?._id))}>
 						<DeleteIcon fontSize='medium' />
 					</Button>
 				)}

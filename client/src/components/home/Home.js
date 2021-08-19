@@ -14,7 +14,7 @@ function useQuery() {
 const Home = ({ handleOpen, setCurrentId }) => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
-	const { posts, isLoading, numberOfPages, errorMessage } = useSelector(
+	const { posts, isLoading, numberOfPages } = useSelector(
 		(state) => state.memories
 	);
 	const query = useQuery();

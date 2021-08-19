@@ -35,7 +35,7 @@ export const searchPosts = (searchQuery) => async (dispatch) => {
 		});
 		dispatch({ type: END_LOADING });
 	} catch (error) {
-		dispatch({ type: ERROR_MESSAGE, payload: error.response.data });
+		console.log(error);
 	}
 };
 
@@ -58,7 +58,7 @@ export const createPost = (newPost, router) => async (dispatch) => {
 		dispatch({ type: START_LOADING });
 		const { data } = await api.create(newPost);
 		console.log(data);
-		router.push(`/posts/${data._id}`);
+		router.push(`/posts/${data?.post?._id}`);
 		dispatch({ type: CREATE_POST, payload: data.post });
 		dispatch({ type: END_LOADING });
 	} catch (error) {
@@ -66,12 +66,11 @@ export const createPost = (newPost, router) => async (dispatch) => {
 	}
 };
 
-export const updatePost = (id, updatePost, router) => async (dispatch) => {
+export const updatePost = (id, updatePost) => async (dispatch) => {
 	try {
 		dispatch({ type: START_LOADING });
 		const { data } = await api.findByIdAndUpdate(id, updatePost);
 		console.log(data);
-		router.push(`/posts/${data._id}`);
 		dispatch({ type: UPDATE_POST, payload: data.updatedPost });
 		dispatch({ type: END_LOADING });
 	} catch (error) {

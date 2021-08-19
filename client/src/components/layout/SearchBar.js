@@ -13,12 +13,13 @@ const SearchBar = ({ className, handleClose }) => {
 	const [tags, setTags] = useState([]);
 
 	const onSearchClick = () => {
-		if (term.trim() || tags) {
-			dispatch(searchPosts({ term, tags: tags.join(",") }));
-			history.push(`/posts/search?search_q=${term}&tags=${tags.join(",")}`);
-		} else {
+		if (!term && !tags) {
 			history.push("/");
 		}
+		dispatch(searchPosts({ term: term || "none", tags: tags.join(",") }));
+		history.push(
+			`/posts/search?search_q=${term || "none"}&tags=${tags.join(",")}`
+		);
 		handleClose();
 	};
 	const handleSearch = (e) => {

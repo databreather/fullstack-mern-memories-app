@@ -12,18 +12,24 @@ export const userLogin = async (req, res) => {
 	try {
 		const user = await User.findOne({ email });
 
-		if (!user) return res.status(404).send("Incorrect Email or Password");
+		if (!user) {
+			return res.status(404).send("Incorrect Email or Password");
+		}
 
 		const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-		if (!isPasswordCorrect)
+		if (!isPasswordCorrect) {
 			return res.status(404).send("Incorrect Email or Password");
+		}
+
+		const secret = String(process.env.JWT_SECRET);
 		const payload = { id: user._id };
-		const token = jwt.sign(payload, process.env.JWT_SECRET, {
+
+		const token = jwt.sign(payload, secret, {
 			expiresIn: "1h",
 		});
 
-		res.status(200).json({ result: user, token, message: "Logged in" });
+		res.status(200).json({ user, token, message: "Logged in" });
 	} catch (err) {
 		res.status(500).send("Internal Server Error");
 	}
@@ -44,13 +50,17 @@ export const userSignup = async (req, res) => {
 	try {
 		const userExists = await User.findOne({ email });
 
-		if (userExists) return res.status(400).send("User already exists.");
+		if (userExists) {
+			return res.status(400).send("User already exists.");
+		}
 
 		user.password = await bcrypt.hash(password, 12);
 
 		await user.save();
+
 		const secret = String(process.env.JWT_SECRET);
 		const payload = { id: user._id };
+
 		const token = jwt.sign(payload, secret, {
 			expiresIn: "1h",
 		});

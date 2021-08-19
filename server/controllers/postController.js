@@ -10,6 +10,7 @@ export const getPosts = async (req, res) => {
 	const page = parseInt(req.query.page);
 	const LIMIT = 8;
 	const startIndex = (page - 1) * LIMIT;
+
 	try {
 		const totalPosts = await Post.countDocuments({});
 		const posts = await Post.find()
@@ -24,36 +25,34 @@ export const getPosts = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({ message: "Internal Server Error" });
+		return res.status(500).send("Internal Server Error");
 	}
 };
 
 export const searchPosts = async (req, res) => {
 	const { search_q, tags } = req.query;
-	let posts;
 	try {
-		if (!search_q && !tags) {
-			posts = await Post.find();
-		} else {
-			posts = await Post.find({ tags: { $all: tags.split(",") } }); //search by title or tags { title: new RegExp(search_q, "i") },
-		}
-
+		const posts = await Post.find({
+			$or: [
+				{ title: new RegExp(search_q, "i") },
+				{ tags: { $in: tags.split(",") } },
+			],
+		}).sort({ _id: -1 });
 		return res.status(200).json(posts);
 	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error" });
+		return res.status(500).send("Internal Server Error");
 	}
 };
 
 export const getPost = async (req, res) => {
 	try {
 		const post = await Post.findById(req.params.id);
-		if (!post)
-			return res.status(404).json({ message: "No post found with that id." });
+		if (!post) return res.status(404).send("No post found with that id.");
 
 		return res.status(200).json(post);
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({ message: "Internal Server Error" });
+		return res.status(500).send("Internal Server Error");
 	}
 };
 
@@ -71,15 +70,14 @@ export const createPost = async (req, res) => {
 		res.status(201).json({ post, message: "Post created" });
 	} catch (error) {
 		console.log(error);
-		return res.status(409).json({ message: error.message });
+		return res.status(409).send({ message: error.message });
 	}
 };
 
 export const updatePost = async (req, res) => {
 	try {
 		const post = await Post.findById(req.params.id);
-		if (!post)
-			return res.status(404).json({ message: "No post foung with that id" });
+		if (!post) return res.status(404).send("No post foung with that id");
 		req.body.tags = req.body.tags.split(",");
 		const updatedPost = await Post.findByIdAndUpdate(
 			req.params.id,
@@ -93,46 +91,47 @@ export const updatePost = async (req, res) => {
 		return res.status(200).json({ updatedPost, message: "Post updated" });
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({ message: "Internal Server Error" });
+		return res.status(500).send("Internal Server Error");
 		console.log(error);
 	}
 };
 
 export const deletePost = async (req, res) => {
 	if (!mongoose.Types.ObjectId.isValid(req.params.id))
-		return res.status(404).json({ message: "No post found with that id" });
+		return res.status(404).send("No post found with that id");
 
 	try {
 		await Post.findByIdAndRemove(req.params.id);
 
-		return res.json({ message: "Post deleted successfully." });
+		return res.send("Post deleted successfully.");
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({ message: "Internal Server Error" });
+		return res.status(500).send("Internal Server Error");
 	}
 };
 
 export const likePost = async (req, res) => {
 	let message = "";
 	if (!req.userId) {
-		return res.status(401).json({ message: "Unauthenticated" });
+		return res
+			.status(401)
+			.send("Unauthenticated. Please Log in to like this post.");
 	}
 
 	try {
 		const post = await Post.findById(req.params.id);
 
-		if (!post)
-			return res.status(404).json({ message: "No post found with that id" });
+		if (!post) return res.status(404).send("No post found with that id");
 
 		//get the index of the likes element which matches with the authenticated user id
 		const index = post.likes.findIndex((like) => like === req.userId);
 
 		if (index === -1) {
-			//user hasnt liked it, can now like
+			//user hasnt liked it, can like now
 			post.likes.push(req.userId);
 			message = "Somebody liked your post";
 		} else {
-			//user has already liked, remove like on 2nd attempt
+			//user has already liked the post, remove like on 2nd attempt
 			post.likes = post.likes.filter((id) => id !== req.userId);
 			message = "Somebody unliked your post";
 		}
@@ -142,7 +141,7 @@ export const likePost = async (req, res) => {
 		return res.status(200).json({ updatedPost, message });
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({ message: "Internal Server Error" });
+		return res.status(500).send("Internal Server Error");
 	}
 };
 

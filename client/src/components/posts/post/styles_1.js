@@ -29,7 +29,31 @@ export default makeStyles((theme) => ({
 	recommendedPosts: {
 		display: "flex",
 		[theme.breakpoints.down("sm")]: {
+			alignItems: "center",
 			flexDirection: "column",
+		},
+	},
+	recommendedCard: {
+		display: "flex",
+		alignItems: "center",
+		[theme.breakpoints.down("xs")]: {
+			flexWrap: "wrap",
+			flexDirection: "column",
+		},
+	},
+	recommendedContent: {
+		width: "220px",
+		marginRight: "20px",
+		[theme.breakpoints.down("xs")]: {
+			width: "300px",
+			marginBottom: "10px",
+		},
+	},
+	recommendedImage: {
+		objectFit: "fill",
+		borderRadius: "10px",
+		[theme.breakpoints.down("xs")]: {
+			width: "300px",
 		},
 	},
 	loadingPaper: {

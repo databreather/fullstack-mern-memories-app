@@ -55,9 +55,7 @@ const Form = ({ currentId, setCurrentId, handleClose }) => {
 		e.preventDefault();
 		const postData = { ...textField, selectedFile, tags: tags.join(",") };
 		if (currentId) {
-			dispatch(
-				updatePost(currentId, { ...postData, name: user?.name }, history)
-			);
+			dispatch(updatePost(currentId, { ...postData, name: user?.name }));
 		} else {
 			dispatch(createPost({ ...postData, name: user?.name }, history));
 		}
