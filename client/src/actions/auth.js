@@ -11,7 +11,6 @@ export const googleLogin = (data) => async (dispatch) => {
 export const userLogin = (formData, router) => async (dispatch) => {
 	try {
 		const { data } = await api.login(formData);
-		console.log(data);
 		dispatch({ type: CUSTOM_AUTH, payload: data });
 
 		router.push("/");
@@ -25,7 +24,6 @@ export const userSignup = (formData, router) => async (dispatch) => {
 		const { data } = await api.signup(formData);
 
 		dispatch({ type: CUSTOM_AUTH, payload: data });
-
 		router.push("/");
 	} catch (error) {
 		console.log(error);

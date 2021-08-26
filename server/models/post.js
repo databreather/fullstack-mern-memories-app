@@ -8,6 +8,7 @@ export default mongoose.model("posts", {
 	tags: [String],
 	selectedFile: String,
 	likes: { type: [String], default: [] },
+	comments: { type: [String], default: [] },
 	createdAt: {
 		type: Date,
 		default: Date.now,

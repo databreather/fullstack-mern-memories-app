@@ -6,6 +6,7 @@ import {
 	UPDATE_POST,
 	LIKE_POST,
 	DELETE_POST,
+	COMMENT_POST,
 	START_LOADING,
 	END_LOADING,
 	ERROR_MESSAGE,
@@ -77,6 +78,13 @@ const memories = (state = initialState, action) => {
 			return {
 				...state,
 				posts: state.posts.filter((post) => post._id !== action.payload),
+			};
+		case COMMENT_POST:
+			return {
+				...state,
+				posts: state.posts.map((post) =>
+					post._id === action.payload._id ? action.payload : post
+				),
 			};
 		default:
 			return state;

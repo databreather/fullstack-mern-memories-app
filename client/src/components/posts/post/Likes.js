@@ -4,8 +4,9 @@ import ThumbUpAltOutlined from "@material-ui/icons/ThumbUpAltOutlined";
 
 const Likes = ({ likes, user }) => {
 	if (likes.length > 0) {
-		const like = likes.find((like) => like === (user?.googleId || user?._id));
-		return like ? (
+		const currentUserId = user?.googleId || user?._id;
+		const likedPost = likes.find((like) => like === currentUserId);
+		return likedPost ? (
 			<>
 				<ThumbUpAltIcon fontSize='small' />
 				&nbsp;

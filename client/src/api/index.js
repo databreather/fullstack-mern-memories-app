@@ -8,7 +8,7 @@ const API = axios.create({
 API.interceptors.request.use((req) => {
 	if (localStorage.getItem("profile")) {
 		req.headers.Authorization = `Bearer ${
-			JSON.parse(localStorage.getItem("profile")).token
+			JSON.parse(localStorage.getItem("profile"))?.token
 		}`;
 	}
 
@@ -26,6 +26,7 @@ export const findByIdAndLike = (id) => API.patch(`/posts/${id}/like`);
 export const findByIdAndUpdate = (id, updatedPost) =>
 	API.patch(`/posts/update/${id}`, updatedPost);
 export const findByIdAndRemove = (id) => API.delete(`/posts/delete/${id}`);
-
+export const comment = (newComment, id) =>
+	API.post(`/posts/${id}/comment`, { comment: newComment });
 export const login = (formData) => API.post("/users/login", formData);
 export const signup = (formData) => API.post("/users/signup", formData);

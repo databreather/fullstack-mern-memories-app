@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams, useHistory } from "react-router-dom";
 import { getPost, searchPosts } from "../../../actions/memories";
 import useStyles from "./styles_1";
+import CommentSection from "../comments/CommentSection";
 
 const PostDetails = () => {
 	const classes = useStyles();
@@ -20,13 +21,13 @@ const PostDetails = () => {
 
 	useEffect(() => {
 		dispatch(getPost(id));
-	}, [id]);
+	}, [dispatch, id]);
 
 	useEffect(() => {
 		if (post) {
 			dispatch(searchPosts({ search: "none", tags: post.tags.join(",") }));
 		}
-	}, [post]);
+	}, [dispatch, post]);
 
 	const recommendedPosts = posts.filter(({ _id }) => _id !== post?._id);
 
@@ -61,9 +62,7 @@ const PostDetails = () => {
 						<strong>Realtime Chat - coming soon</strong>
 					</Typography>
 					<Divider style={{ margin: "20px 0" }} />
-					<Typography variant='body1'>
-						<strong>Comments - coming soon</strong>
-					</Typography>
+					<CommentSection post={post} />
 					<Divider style={{ margin: "20px 0" }} />
 				</div>
 				<div className={classes.imageSection}>

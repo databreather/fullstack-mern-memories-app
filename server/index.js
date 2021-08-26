@@ -19,12 +19,12 @@ app.use(cors());
 app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
-	res.send("Welcome to my application");
+	res.send("SERVER IS RUNNING");
 });
 app.use("/api/posts", postRoutes);
 app.use("/api/users", userRoutes);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 //DB Connection
 mongoose.connect(

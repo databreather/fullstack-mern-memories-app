@@ -24,7 +24,6 @@ export const getPosts = async (req, res) => {
 			numberOfPages: Math.ceil(totalPosts / LIMIT),
 		});
 	} catch (error) {
-		console.log(error);
 		return res.status(500).send("Internal Server Error");
 	}
 };
@@ -51,12 +50,13 @@ export const getPost = async (req, res) => {
 
 		return res.status(200).json(post);
 	} catch (error) {
-		console.log(error);
 		return res.status(500).send("Internal Server Error");
 	}
 };
 
 export const createPost = async (req, res) => {
+	console.log(req.userId);
+
 	req.body.tags = req.body.tags ? req.body.tags.split(",") : [];
 
 	let post = new Post({
@@ -69,7 +69,6 @@ export const createPost = async (req, res) => {
 
 		res.status(201).json({ post, message: "Post created" });
 	} catch (error) {
-		console.log(error);
 		return res.status(409).send({ message: error.message });
 	}
 };
@@ -77,7 +76,7 @@ export const createPost = async (req, res) => {
 export const updatePost = async (req, res) => {
 	try {
 		const post = await Post.findById(req.params.id);
-		if (!post) return res.status(404).send("No post foung with that id");
+		if (!post) return res.status(404).send("No post found with that id");
 		req.body.tags = req.body.tags.split(",");
 		const updatedPost = await Post.findByIdAndUpdate(
 			req.params.id,
@@ -90,9 +89,7 @@ export const updatePost = async (req, res) => {
 
 		return res.status(200).json({ updatedPost, message: "Post updated" });
 	} catch (error) {
-		console.log(error);
 		return res.status(500).send("Internal Server Error");
-		console.log(error);
 	}
 };
 
@@ -105,17 +102,15 @@ export const deletePost = async (req, res) => {
 
 		return res.send("Post deleted successfully.");
 	} catch (error) {
-		console.log(error);
 		return res.status(500).send("Internal Server Error");
 	}
 };
 
 export const likePost = async (req, res) => {
 	let message = "";
+
 	if (!req.userId) {
-		return res
-			.status(401)
-			.send("Unauthenticated. Please Log in to like this post.");
+		return res.status(401).send("Unauthenticated.");
 	}
 
 	try {
@@ -140,13 +135,31 @@ export const likePost = async (req, res) => {
 		});
 		return res.status(200).json({ updatedPost, message });
 	} catch (error) {
-		console.log(error);
 		return res.status(500).send("Internal Server Error");
 	}
 };
 
-// function splitByHashes(tags) {
-// 	return tags.match(/#[a-zA-Z0-9@&-_]+/);
-// }
+export const commentPost = async (req, res) => {
+	const { id } = req.params;
+	const { comment } = req.body;
+	console.log(comment, id);
 
-export default router;
+	if (!req.userId) {
+		return res.status(401).send("Unauthenticated.");
+	}
+
+	try {
+		const post = await Post.findById(id);
+		if (!post) {
+			return res.status(404).send("No post found with that id");
+		}
+
+		post.comments.push(comment);
+		const updatedPost = await Post.findByIdAndUpdate(id, post, { new: true });
+
+		return res.status(201).json(updatedPost);
+	} catch (error) {
+		console.log(error);
+		return res.status(500).send("Internal Server Error");
+	}
+};

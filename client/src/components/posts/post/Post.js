@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
 	Card,
 	CardActions,
@@ -21,9 +21,13 @@ const Post = ({ handleOpen, post, setCurrentId }) => {
 	const dispatch = useDispatch();
 	const classes = useStyles();
 	const user = JSON.parse(localStorage.getItem("profile"))?.user;
-
+	const [likes, setLikes] = useState(post?.likes);
+	const handleLikePost = async () => {
+		const newLikes = await dispatch(likePost(post?._id));
+		setLikes(newLikes);
+	};
 	return (
-		<Card className={classes.card} raised elevation={6}>
+		<Card className={classes.card} elevation={6}>
 			<Link to={`/posts/${post._id}`}>
 				<CardMedia
 					className={classes.media}
@@ -40,21 +44,21 @@ const Post = ({ handleOpen, post, setCurrentId }) => {
 					{moment(post.createdAt).fromNow()}
 				</Typography>
 			</div>
-			{user?.googleId === post?.creatorId ||
-				(user?._id === post?.creatorId && (
-					<div className={classes.overlay2}>
-						<Button
-							onClick={(e) => {
-								e.stopPropagation();
-								setCurrentId(post._id);
-								handleOpen();
-							}}
-							style={{ color: "white" }}
-							size='small'>
-							<MoreHorizIcon fontSize='medium' />
-						</Button>
-					</div>
-				))}
+			{(user?.googleId === post?.creatorId ||
+				user?._id === post?.creatorId) && (
+				<div className={classes.overlay2}>
+					<Button
+						onClick={(e) => {
+							e.stopPropagation();
+							setCurrentId(post._id);
+							handleOpen();
+						}}
+						style={{ color: "white" }}
+						size='small'>
+						<MoreHorizIcon fontSize='medium' />
+					</Button>
+				</div>
+			)}
 			<div className={classes.details}>
 				<Typography variant='body2' color='textSecondary' component='h2'>
 					{post.tags.map((tag) => `#${tag} `)}
@@ -77,8 +81,8 @@ const Post = ({ handleOpen, post, setCurrentId }) => {
 					size='small'
 					color='primary'
 					disabled={!user}
-					onClick={() => dispatch(likePost(post?._id))}>
-					<Likes likes={post.likes} user={user} />
+					onClick={handleLikePost}>
+					<Likes likes={likes} user={user} />
 				</Button>
 				{(user?.googleId === post?.creatorId ||
 					user?._id === post?.creatorId) && (

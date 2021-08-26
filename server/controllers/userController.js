@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 dotenv.config();
+const secret = process.env.JWT_SECRET;
 
 import User from "../models/user.js";
 
@@ -21,10 +22,7 @@ export const userLogin = async (req, res) => {
 		if (!isPasswordCorrect) {
 			return res.status(404).send("Incorrect Email or Password");
 		}
-
-		const secret = String(process.env.JWT_SECRET);
-		const payload = { id: user._id };
-
+		const payload = { id: user._id, email: user.email };
 		const token = jwt.sign(payload, secret, {
 			expiresIn: "1h",
 		});
@@ -57,10 +55,7 @@ export const userSignup = async (req, res) => {
 		user.password = await bcrypt.hash(password, 12);
 
 		await user.save();
-
-		const secret = String(process.env.JWT_SECRET);
-		const payload = { id: user._id };
-
+		const payload = { id: user._id, email: user.email };
 		const token = jwt.sign(payload, secret, {
 			expiresIn: "1h",
 		});
